@@ -80,6 +80,7 @@ var SequenceD = (function (sequenced) {
 
             addChild: function (element, opts) {
                 //this.children().add(element, opts);
+                element.parent(this);
 
                 var position = this.calculateIndex(element, element.get('centerPoint').get('y'));
                 var index = position.index;
@@ -256,6 +257,7 @@ var SequenceD = (function (sequenced) {
                 this.children(children);
 
                 this.viewAttributes = {
+                    class: attrs.cssClass,
                     leftUpperConer: {x: 0, y: 0},
                     rightLowerConer: {x: 0, y: 0}
                 };
@@ -268,7 +270,8 @@ var SequenceD = (function (sequenced) {
 
             defaults: {
                 centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
-                title: "Lifeline"
+                title: "Lifeline",
+                viewAttributes: {colour: "#998844"}
             },
 
             getSchema: function () {
@@ -331,22 +334,23 @@ var SequenceD = (function (sequenced) {
                 return new GeoCore.Models.Point({'x': x, 'y': y});
             },
 
-            createLifeLine: function (title, center) {
-                return new SequenceD.Models.LifeLine({title: title, centerPoint: center});
+            createLifeLine: function (title, center, colour) {
+                return new SequenceD.Models.LifeLine({title: title, centerPoint: center, colour: colour});
             },
 
             createFixedSizedMediator: function (title, center) {
                 return new SequenceD.Models.FixedSizedMediator({title: title, centerPoint: center});
             },
 
-            createProcessor: function (title, center, type, model, viewAttributes, parameters) {
+            createProcessor: function (title, center, type, model, viewAttributes, parameters, getMySubTree) {
                 return new SequenceD.Models.Processor({
                     title: title,
                     centerPoint: center,
                     type: type,
                     model: model,
                     viewAttributes: viewAttributes,
-                    parameters: parameters
+                    parameters: parameters,
+                    getMySubTree: getMySubTree
                 });
             },
 
@@ -359,6 +363,7 @@ var SequenceD = (function (sequenced) {
             addChild: function (element, opts) {
                 //this.children().add(element, opts);
 
+                element.parent(this);
                 if (element instanceof SequenceD.Models.Processor) {
                     var position = this.calculateIndex(element, element.get('centerPoint').get('y'));
                     var index = position.index;
@@ -416,8 +421,15 @@ var SequenceD = (function (sequenced) {
                 } else {
                     this.set('children', children);
                 }
-            }
+            },
 
+            setY: function (y) {
+                this.get('centerPoint').set('y', y);
+            },
+
+            setX: function (x) {
+                this.get('centerPoint').set('x', x);
+            }
 
         });
 
@@ -457,6 +469,13 @@ var SequenceD = (function (sequenced) {
             nameSpace: sequenced,
 
             defaults: {},
+
+            sourcePoint: function (sourcePoint) {
+                if (_.isUndefined(sourcePoint)) {
+                    return this.get("sourcePoint");
+                }
+                this.set("sourcePoint", sourcePoint);
+            },
 
             source: function (ConnectionPoint, x, y) {
                 return Diagrams.Models.Link.prototype.source.call(this, ConnectionPoint, x, y);
@@ -521,6 +540,8 @@ var SequenceD = (function (sequenced) {
              */
             initialize: function (attrs, options) {
                 Diagrams.Models.DiagramElement.prototype.initialize.call(this, attrs, options);
+                this.type = attrs.model.type;
+                this.model = attrs.model;
                 this.set("centerPoint", new GeoCore.Models.Point({x: attrs.x, y: attrs.y}));
                 this.set("direction", attrs.direction);
             },
@@ -530,7 +551,9 @@ var SequenceD = (function (sequenced) {
             nameSpace: sequenced,
 
             defaults: {
-                "centerPoint": new GeoCore.Models.Point({x: 0, y: 0})
+                "centerPoint": new GeoCore.Models.Point({x: 0, y: 0}),
+                width : 0,
+                height : 0
             },
 
             centerPoint: function (centerPoint) {
@@ -566,7 +589,27 @@ var SequenceD = (function (sequenced) {
                     return this.get("direction");
                 }
                 this.set("direction", direction);
-            }
+            },
+
+            setY: function (y) {
+                this.get('centerPoint').set('y', y);
+            },
+
+            getWidth: function () {
+                return this.get('width');
+            },
+
+            getHeight: function (){
+                return this.get('height');
+            },
+
+            setWidth: function (width) {
+                this.set('width', width);
+            },
+
+            setHeight: function (height) {
+                this.set('height', height);
+            },
 
         });
 
@@ -639,14 +682,15 @@ var SequenceD = (function (sequenced) {
                 return position;
             },
 
-            createProcessor: function (title, center, type, model, viewAttributes, parameters) {
+            createProcessor: function (title, center, type, model, viewAttributes, parameters, getMySubTree) {
                 return new SequenceD.Models.Processor({
                     title: title,
                     centerPoint: center,
                     type: type,
                     model: model,
                     viewAttributes: viewAttributes,
-                    parameters: parameters
+                    parameters: parameters,
+                    getMySubTree: getMySubTree
                 });
             },
 

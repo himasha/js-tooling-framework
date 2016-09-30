@@ -23,11 +23,25 @@ var Processors = (function (processors) {
     //Define manipulator mediators
     var switchMediator = {
         id: "SwitchMediator",
-        title: "Switch Mediator",
+        title: "Switch",
         icon: "images/SwitchMediator.gif",
         colour : "#334455",
         type : "DynamicContainableProcessor",
-        parameters: []
+        dragCursorOffset : { left: 45, top: -5 },
+        createCloneCallback : function(view){
+            function cloneCallBack() {
+                var svgRoot = view.createSVGForDraggable();
+                var group = svgRoot.draw.group(svgRoot).attr("class", "switch-mediator-tool");
+                var rect = svgRoot.draw.basicRect(0, 0, 90, 30, 0, 0, group);
+                var text = svgRoot.draw.centeredText(new GeoCore.Models.Point({'x': 45, 'y': 15}), "Switch", group);
+                return svgRoot.getDraggableRoot();
+            }
+            return cloneCallBack;
+        },
+        parameters: [],
+        getMySubTree: function (model) {
+            return new TreeNode("SwitchMediator", "SwitchMediator");
+        }
     };
 
     // Add defined mediators to manipulators

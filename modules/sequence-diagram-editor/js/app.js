@@ -46,8 +46,8 @@ var createPoint = function (x, y) {
     return new GeoCore.Models.Point({'x': x, 'y': y});
 };
 
-var createLifeLine = function (title, center) {
-    return new SequenceD.Models.LifeLine({title: title, centerPoint: center});
+var createLifeLine = function (title, center, cssClass) {
+    return new SequenceD.Models.LifeLine({title: title, centerPoint: center, cssClass: cssClass});
 };
 
 var createFixedSizedMediator = function (title, center) {
@@ -58,16 +58,34 @@ var createMessage = function (start, end) {
     return new SequenceD.Models.Message({source: start, destination: end});
 };
 
+
 // Create tool palette elements
-var lifeline = new Tools.Models.Tool({
-    id: "LifeLine",
-    title: "Lifeline",
-    icon: "images/icon1.png"
-});
+//var lifeline = new Tools.Models.Tool({
+//    id: "LifeLine",
+//    title: "Lifeline",
+//    icon: "images/icon1.png",
+//    dragCursorOffset : { left: 30, top: 40 },
+//    createCloneCallback : function(view){
+//        function cloneCallBack() {
+//            var svgRoot = view.createSVGForDraggable();
+//            var line = svgRoot.draw.line(30, 10, 30, 60, svgRoot).attr("class", 'lifeline-tool-line');
+//            var rect = svgRoot.draw.basicRect(0, 0, 60, 20, 0, 0, svgRoot).attr("class", 'lifeline-tool-rect');
+//            return svgRoot.getDraggableRoot();
+//        }
+//        return cloneCallBack;
+//    },
+//});
+
 
 // Create main tool group
 var mainToolGroup = new Tools.Models.ToolGroup();
-mainToolGroup.add(lifeline);
+//mainToolGroup.add(lifeline);
+
+for (var lifeline in MainElements.lifelines) {
+    var tool = new Tools.Models.Tool(MainElements.lifelines[lifeline]);
+    mainToolGroup.add(tool);
+}
+
 var mainToolGroupWrapper = new Tools.Models.ToolGroupWrapper({
     toolGroupName: "Main Elements",
     toolGroupID: "main-tool-group",
@@ -139,7 +157,31 @@ udcontrolView.render();
 //var ppModel = new Editor.Views.PropertyPaneModel();
 var ppView = new Editor.Views.PropertyPaneView();
 propertyPane = ''; //ppView.createPropertyPane(schema, properties);
-lifelineCounter = 0;
+endpointLifelineCounter = 0;
+resourceLifelineCounter = 0;
+
+function TreeNode (value, type,cStart, cEnd) {
+    this.object = undefined;
+    this.children = [];
+    this.value = value;
+    this.type = type;
+    this.configStart = cStart;
+    this.configEnd = cEnd;
+
+    this.getChildren = function () {
+        return this.children;
+    };
+
+    this.getValue = function () {
+        return this.value;
+    };
+}
+
+// defining the constants such as the endpoints, this variable need to be positioned properly when restructuring
+// This is a map of constants as --> constantType: constantValue
+// Ex: HttpEP: "http://localhost/test/test2"
+var definedConstants = {};
+
 
 // Configuring dynamic  tab support
 var resource = new Dialogs.Models.ResourceModel({
@@ -152,6 +194,4 @@ var resourceView = new Dialogs.Views.ResourceView({model:resource});
 resourceView.render();
 var contentView = new Dialogs.Views.ResourceCollectionView({model:resource});
 contentView.render();
-
-
 
