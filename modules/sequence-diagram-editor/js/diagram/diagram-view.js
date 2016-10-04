@@ -425,12 +425,12 @@ var Diagrams = (function (diagrams) {
                     diagramView.render();
                 } else if (id == "EndPoint") {
                     endpointLifelineCounter++;
-                    diagramView.renderMainElement(id, endpointLifelineCounter, MainElements.lifelines.EndPointLifeline.colour);
+                    diagramView.renderMainElement(id, endpointLifelineCounter, MainElements.lifelines.EndPointLifeline);
 
                 } else if (id == "Resource") {
                     resourceLifelineCounter++;
                     if(resourceLifelineCounter == 1) {
-                        diagramView.renderMainElement(id, resourceLifelineCounter, MainElements.lifelines.ResourceLifeline.colour);
+                        diagramView.renderMainElement(id, resourceLifelineCounter, MainElements.lifelines.ResourceLifeline);
                     }
                 } else {
 
@@ -441,8 +441,8 @@ var Diagrams = (function (diagrams) {
             render: function () {
 
                 //Remove previous diagram
-                if (this.d3el) {
-                    this.d3el.remove();
+                if (diagramD3el) {
+                    diagramD3el.remove();
                     for (var element in diagramViewElements) {
                         diagramViewElements[element].remove();
                     }
@@ -497,16 +497,13 @@ var Diagrams = (function (diagrams) {
 
 
 
-                this.d3el = mainGroup;
+                diagramD3el = mainGroup;
                 this.el = mainGroup.node();
                 this.htmlDiv = $(this.options.selector);
                 this.htmlDiv.droppable({
                     drop: this.handleDropEvent,
                     tolerance: "pointer"
                 });
-
-
-                this.htmlDiv.attr("ondragstart", "return false");
 
                 for (var id in this.model.attributes.diagramResourceElements.models) {
                     if (this.model.attributes.diagramResourceElements.models[id] instanceof SequenceD.Models.LifeLine) {
@@ -517,6 +514,19 @@ var Diagrams = (function (diagrams) {
                         });
                         diagramViewElements[diagramViewElements.length] = (lifeLineView);
                         var rectColour = this.model.attributes.diagramResourceElements.models[id].attributes.colour;
+                        lifeLineView.render("#" + this.options.diagram.wrapper.id, "processors", rectColour);
+                    }
+                }
+
+                for (var id in this.model.attributes.diagramEndpointElements.models) {
+                    if (this.model.attributes.diagramEndpointElements.models[id] instanceof SequenceD.Models.LifeLine) {
+                        var lifeLine = this.model.attributes.diagramEndpointElements.models[id];
+                        var lifeLineView = new SequenceD.Views.LifeLineView({
+                            model: lifeLine,
+                            options: lifeLineOptions
+                        });
+                        diagramViewElements[diagramViewElements.length] = (lifeLineView);
+                        var rectColour = this.model.attributes.diagramEndpointElements.models[id].attributes.colour;
                         lifeLineView.render("#" + this.options.diagram.wrapper.id, "processors", rectColour);
                     }
                 }
@@ -531,19 +541,6 @@ var Diagrams = (function (diagrams) {
                         diagramViewElements[diagramViewElements.length] = (lifeLineView);
                         var rectColour = this.model.attributes.diagramResourceElements.models[id].attributes.colour;
                         lifeLineView.render("#" + this.options.diagram.wrapper.id, "messages", rectColour);
-                    }
-                }
-
-                for (var id in this.model.attributes.diagramEndpointElements.models) {
-                    if (this.model.attributes.diagramEndpointElements.models[id] instanceof SequenceD.Models.LifeLine) {
-                        var lifeLine = this.model.attributes.diagramEndpointElements.models[id];
-                        var lifeLineView = new SequenceD.Views.LifeLineView({
-                            model: lifeLine,
-                            options: lifeLineOptions
-                        });
-                        diagramViewElements[diagramViewElements.length] = (lifeLineView);
-                        var rectColour = this.model.attributes.diagramEndpointElements.models[id].attributes.colour;
-                        lifeLineView.render("#" + this.options.diagram.wrapper.id, "processors", rectColour);
                     }
                 }
 
@@ -563,7 +560,7 @@ var Diagrams = (function (diagrams) {
                 return mainGroup;
             },
 
-            renderMainElement: function (lifelineName, counter, colour) {
+            renderMainElement: function (lifelineName, counter, lifeLineDef) {
                 var numberOfResourceElements = diagram.attributes.diagramResourceElements.length;
                 var numberOfEndpointElements = diagram.attributes.diagramEndpointElements.length;
                 var centerPoint;
@@ -589,13 +586,13 @@ var Diagrams = (function (diagrams) {
                         centerPoint = createPoint(200, 50);
                     }
                 }
-                var lifeline = createLifeLine(lifelineName + counter, centerPoint, colour);
+                var lifeline = createLifeLine(lifelineName + counter, centerPoint, lifeLineDef.class);
                 lifeline.leftUpperConer({x: centerPoint.attributes.x - 65, y: centerPoint.attributes.y - 15});
                 lifeline.rightLowerConer({
                     x: centerPoint.attributes.x + 65,
                     y: centerPoint.attributes.y + 15 + lifeLineOptions.middleRect.height + lifeLineOptions.rect.heigh
                 });
-                lifeLineOptions.colour = colour;
+                lifeLineOptions.class = lifeLineDef.class;
                 diagram.addElement(lifeline, lifeLineOptions);
                 diagramView.render();
             },

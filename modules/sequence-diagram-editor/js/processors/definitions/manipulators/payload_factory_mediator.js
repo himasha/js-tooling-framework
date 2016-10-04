@@ -23,18 +23,21 @@ var Processors = (function (processors) {
     //Payload Factory mediator definition
     var payloadFactoryMediator = {
         id: "PayLoadFactoryMediator",
-        title: "PayLoad Factory",
-        icon: "images/PayloadFactoryMediator.gif",
-        colour : "#FFC766",
+        title: "Data Mapper",
+        icon: "images/tool-icons/datamapper.svg",
+        colour : "#27ae60",
         type : "UnitProcessor",
-        dragCursorOffset : { left: 45, top: -5 },
+        dragCursorOffset : { left: 50, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
-                var svgRoot = view.createSVGForDraggable();
-                var group = svgRoot.draw.group(svgRoot).attr("class", "payload-factory-tool");
-                var rect = svgRoot.draw.basicRect(0, 0, 90, 30, 0, 0, group);
-                var text = svgRoot.draw.centeredText(new GeoCore.Models.Point({'x': 45, 'y': 15}), "Payload", group);
-                return svgRoot.getDraggableRoot();
+                var div = view.createContainerForDraggable();
+                d3.xml("images/tool-icons/datamapper_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                    if (error) throw error;
+                    var svg = xml.getElementsByTagName("svg")[0];
+                    d3.select(svg).attr("width", "100px").attr("height", "140px");
+                    div.node().appendChild(svg);
+                });
+                return div.node();
             }
             return cloneCallBack;
         },

@@ -23,18 +23,21 @@ var Processors = (function (processors) {
     //Log mediator definition
     var logMediator = {
         id: "LogMediator",
-        title: "Log Mediator",
-        icon: "images/LogMediator.gif",
-        colour : "#2e2eb8",
+        title: "Logger",
+        icon: "images/tool-icons/log.svg",
+        colour : "#2980b9",
         type : "UnitProcessor",
-        dragCursorOffset : { left: 45, top: -5 },
+        dragCursorOffset : { left: 24, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
-                var svgRoot = view.createSVGForDraggable();
-                var group = svgRoot.draw.group(svgRoot).attr("class", "log-mediator-tool");
-                var rect = svgRoot.draw.basicRect(0, 0, 90, 30, 0, 0, group);
-                var text = svgRoot.draw.centeredText(new GeoCore.Models.Point({'x': 45, 'y': 15}), "Log", group);
-                return svgRoot.getDraggableRoot();
+                var div = view.createContainerForDraggable();
+                d3.xml("images/tool-icons/log_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                    if (error) throw error;
+                    var svg = xml.getElementsByTagName("svg")[0];
+                    d3.select(svg).attr("width", "48px").attr("height", "108px");
+                    div.node().appendChild(svg);
+                });
+                return div.node();
             }
             return cloneCallBack;
         },
