@@ -47,6 +47,34 @@
         </div>
     </div>
 
+    <!--Modal for saving the configuration-->
+    <div class="modal fade" id="newConfigModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="newConfigModalLabel">Save Integration Flow Configuration</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="location" class="form-control-label">Location</label>
+                        <input type="text" class="form-control" id="location">
+                    </div>
+                    <div class="form-group">
+                        <label for="configName" class="form-control-label">Config Name</label>
+                        <input class="form-control" id="configName">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="newConfiguration()" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- header -->
     <header class="header header-default">
         <div class="container-fluid">
@@ -59,60 +87,22 @@
             <div class="pull-right auth float-remove-xs text-center-xs">
             </div>
         </div>
-    </header>
 
-    <!-- navbar -->
-    <nav class="navbar sidebar-wrapper toggled sub-nav" role="navigation" data-side="left" data-width="58">
-        <ul class="nav navbar-nav nav-stacked">
-            <li aria-expanded="true" class="active">
-                <a data-toggle="sidebar" data-target="#left-sidebar" data-container=".page-content-wrapper" data-container-divide="true"
-                    aria-expanded="true" rel="sub-nav" onclick="updateSidebarNav('#sidebarNavFileExplorer', this)" title="File Explorer" id="btn-pages-sidebar"
-                    class="active">
-                    <i class="icon fw fw-pages"></i>
-                </a>
-            </li>
-            <li aria-expanded="false" class="">
-                <a data-toggle="sidebar" data-target="#left-sidebar" data-container=".page-content-wrapper" data-container-divide="true"
-                    aria-expanded="false" rel="sub-nav" onclick="updateSidebarNav('#sidebarNavSettings', this)" title="Settings"
-                    id="btn-sidebar-gadgets" class="">
-                    <i class="icon fw fw-gadget"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
+        <!--TODO: remove-->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="main-navbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" data-toggle="modal" data-target="#newConfigModal">New<span class="sr-only">(current)</span></a></li>
+                        <li><a href="#" onclick="saveConfiguration()">Save</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>    </header>
 
     <!-- #page-content-wrapper -->
-    <div class="page-content-wrapper fixed" style="padding-left: 305px;">
-
-        <!-- .left-sidebar -->
-        <div class="sidebar-wrapper sidebar-nav toggled" id="left-sidebar" data-side="left" data-width="250" data-offset-left="55"
-            style="left: 55px;">
-
-            <button class="btn btn-default close-handle close-sidebar" data-handle="close" data-toggle="sidebar" data-target="#left-sidebar"
-                data-container=".page-content-wrapper" data-container-divide="true" aria-expanded="true" rel="sub-nav"><i class="fw fw-left-arrow"></i></button>
-
-            <div class="nano">
-                <div class="nano-content" tabindex="0">
-                    <!-- File Explorer -->
-                    <div id="sidebarNavFileExplorer" style="display: block;">
-                        <div class="sidebar-brand">File Explorer</div>
-                        <div class="alert alert-info">
-                            File explorer planel will be added here.
-                        </div>
-                    </div>
-                    <!-- Settings -->
-                    <div id="sidebarNavSettings" class="ues-store-assets" data-type="gadget" style="display: none;">
-                        <div class="sidebar-brand">Settings</div>
-                        <div class="alert alert-info">
-                            Settings panel will be added here.
-                        </div>
-                    </div>
-                </div>
-                <div class="nano-pane" style="display: block;">
-                    <div class="nano-slider" style="height: 49px; transform: translate(0px, 0px);"></div>
-                </div>
-            </div>
-        </div>
+    <div class="page-content-wrapper fixed" style="padding-left: 0px;">
 
         <!-- .left-sidebar-sub -->
         <div class="sidebar-wrapper sidebar-nav sidebar-nav-sub" id="left-sidebar-sub" data-side="left" data-width="250" data-offset-left="305"
@@ -129,27 +119,22 @@
         </div>
 
         <!-- page content -->
-        <div class="container-fluid body-wrapper">
-            <div class="page-content">
-                <ul class="nav nav-tabs" id="designer-view-mode">
-                    <li role="dashboard-view" data-view-mode="default" class="active">
-                        <a href="#designViewTab" aria-controls="defaultDashboardView" role="tab" data-toggle="tab">Design View</a>
-                    </li>
-                    <li role="dashboard-view" data-view-mode="anon" class="">
-                        <a href="#sourceViewTab" aria-controls="anonymousDashboardView" role="tab" data-toggle="tab">Source View</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div id="designViewTab" class="tab-pane fade in active">
-                        <iframe id="iframe1" src="design-view.html"></iframe>
-                    </div>
-                    <div id="sourceViewTab" class="tab-pane fade">
-                        <iframe id="iframe2" src="source-view.html"></iframe>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="container-fluid">
+            <iframe id="iframe1" src="design-view.html"></iframe>
+        <div>
+        <!--<div id="sourceViewTab" class="tab-pane fade">-->
+        <!--<iframe id="iframe2" src="source-view.html"></iframe>-->
+        <!--</div>-->
 
+    </div>
+
+    <div class="alert alert-success alert-dismissable" id="successAlert" style="display: none; position: absolute; top: 50px; right: 50px; width: 400px">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        Configuration Saved Successfully!!
+    </div>
+    <div class="alert alert-danger alert-dismissable" id="failAlert" style="display: none; position: absolute; top: 50px; right: 50px; width: 400px">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        Configuration saving Failed!!
     </div>
     <!-- /#page-content-wrapper -->
 
@@ -166,11 +151,86 @@
     <script src="lib/jquery-ui-1.11.4/jquery-ui.min.js"></script>
 
     <script>
-		$("iframe").css("height", $(window).height() - 40 + "px");
 		window.onresize = function() {
-			$("iframe").css("height", $(window).height() - 40 + "px");
+			$("iframe").css("height", $(window).height() - 130 + "px");
 		}
+        $(window.onresize);
 	</script>
+
+    <script>
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var target = $(e.target).attr("href"); // activated tab
+            // If the changed tab is the source view tab, we need to trigger the source generation in the design view
+            // Fires the event message to the design view
+            // Design view will listen to the event and generate the source from the design
+            if (target == "#sourceViewTab") {
+                var DesignIFrame = document.getElementById("iframe1").contentWindow;
+                DesignIFrame.postMessage("Hello","*");
+            }
+        })
+    </script>
+
+
+    <script>
+        // Listens to the event messages fired by the two children iframes (Source-view and the diagram-view)
+        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+        var eventer = window[eventMethod];
+        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+        var saveConfig = false;
+        var configLocation = undefined;
+        var configFileName = undefined;
+
+        // Listen to message
+        eventer(messageEvent,function(e) {
+            if (saveConfig) {
+                var config = '@Path ("/stock")\n' +
+                        '@Source (protocol="http", host="localhost", port=8080)\n' +
+                        '@Api (tags = {"stock_info","stock_update"}, description = "Rest api for do operations on admin", produces = MediaType.APPLICATION_JSON)\n' +
+                        'package com.sample;\n\n';
+                config += e.data;
+                var payload = "location=" + (btoa(configLocation.value + "/" + configFileName.value)) + "&config=" + (btoa(config));
+
+                $.ajax({
+                    url:"http://localhost:8080/utility/saveconfig",
+                    type:"POST",
+                    data:payload,
+                    contentType:"text/plain; charset=utf-8",
+                    async:false,
+                    success: function(data, textStatus, xhr){
+                        if (xhr.status == 200) {
+                            $('#successAlert').show();
+                            $("#successAlert").fadeTo(4000, 500).slideUp(500, function() {
+                                $("#successAlert").slideUp(500);
+                            });
+                        } else {
+                            $('#failAlert').show();
+                            $("#failAlert").fadeTo(4000, 500).slideUp(500, function() {
+                                $("#failAlert").slideUp(500);
+                            });
+                        }
+
+                    }
+                });
+                saveConfig = false;
+            } else {
+                var SourceIFrame = document.getElementById("iframe2").contentWindow;
+                SourceIFrame.postMessage(e.data, "*");
+            }
+        },false);
+
+        function saveConfiguration() {
+            saveConfig = true;
+            var DesignIFrame = document.getElementById("iframe1").contentWindow;
+            DesignIFrame.postMessage("save-config","*");
+        }
+
+        function newConfiguration() {
+            var SourceIFrame = document.getElementById("iframe1").contentWindow;
+            SourceIFrame.postMessage("new-config", "*");
+            configLocation = document.getElementById("location");
+            configFileName = document.getElementById("configName");
+        }
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="lib/bootstrap_v3.3.6/js/bootstrap.min.js"></script>

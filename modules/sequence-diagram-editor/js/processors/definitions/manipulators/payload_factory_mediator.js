@@ -23,9 +23,59 @@ var Processors = (function (processors) {
     //Payload Factory mediator definition
     var payloadFactoryMediator = {
         id: "PayLoadFactoryMediator",
-        title: "PayLoad Factory Mediator",
-        icon: "images/PayloadFactoryMediator.gif",
-        parameters: []
+        title: "Data Mapper",
+        icon: "images/tool-icons/datamapper.svg",
+        colour : "#27ae60",
+        type : "UnitProcessor",
+        dragCursorOffset : { left: 50, top: -5 },
+        createCloneCallback : function(view){
+            function cloneCallBack() {
+                var div = view.createContainerForDraggable();
+                d3.xml("images/tool-icons/datamapper_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                    if (error) throw error;
+                    var svg = xml.getElementsByTagName("svg")[0];
+                    d3.select(svg).attr("width", "100px").attr("height", "140px");
+                    div.node().appendChild(svg);
+                });
+                return div.node();
+            }
+            return cloneCallBack;
+        },
+        parameters: [
+            {
+                key: "configurationFile",
+                value: "Configuration file"
+            },
+            {
+                key: "message",
+                value: "Message"
+            },
+            {
+                key: "description",
+                value: "Description"
+            }
+        ],
+        getSchema: function () {
+            return {
+                title: "Data Mapper",
+                type: "object",
+                properties: {
+                    ConfigurationFile: {"type": "string"},
+                    Message: {"type": "string"},
+                    Description: {"type": "string"}
+                }
+            };
+        },
+        getEditableProperties: function (parameters) {
+            var editableProperties = {};
+            editableProperties.ConfigurationFile = parameters[0];
+            editableProperties.Message = parameters[1];
+            editableProperties.Description = parameters[2];
+            return editableProperties;
+        },
+        getMySubTree: function (model) {
+            return new TreeNode("payloadFactoryMediator", "payloadFactoryMediator", "payloadFactory {", "}");
+        }
     };
 
     // Add defined mediators to manipulators

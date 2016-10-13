@@ -10,10 +10,82 @@
     stroke-width: 2.5px;
 }
 
+.lifeline-tool-line{
+    stroke: #666666;
+    stroke-dasharray: 4,1;
+    stroke-width: 2.5px;
+}
+
+.lifeline-tool-rect{
+    fill: #4682B4;
+    fill-opacity: 1;
+}
+
+.tool > line {
+    stroke-dasharray: 4,1;
+    stroke-width: 2.5px;
+}
+.tool > rect {
+    fill-opacity: 1;
+}
+
+.resource > line {
+    stroke: #666666;
+}
+.resource > rect {
+    fill: #8e44ad;
+}
+
+.endpoint > line {
+    stroke: #666666;
+}
+.endpoint > rect {
+    fill: #2c3e50;
+}
+
 .lifeline-rect{
     fill: #4682B4;
 }
 
+.try-block-mediator-tool > rect{
+    fill-opacity: 1;
+    fill: #2c3e50;
+}
+
+.try-block-mediator-tool > text{
+    fill-opacity: 1;
+    fill: #ffffff;
+}
+
+.switch-mediator-tool > rect{
+    fill-opacity: 1;
+    fill: #2c3e50;
+}
+
+.switch-mediator-tool > text{
+    fill-opacity: 1;
+    fill: #ffffff;
+}
+
+.payload-factory-tool > rect{
+    fill-opacity: 1;
+    fill: #27ae60;
+}
+
+.payload-factory-tool > text{
+    fill-opacity: 1;
+    fill: #ffffff;
+}
+
+.log-mediator-tool > rect{
+    fill-opacity: 1;
+    fill: #2980b9;
+}
+
+.log-mediator-tool > text{
+    fill-opacity: 1;
+    fill: #ffffff;
+}
 .message{
     stroke: #666666;
     stroke-width: 2.5px;

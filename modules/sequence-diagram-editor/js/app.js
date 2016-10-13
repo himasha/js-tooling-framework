@@ -29,14 +29,14 @@ lifeLineOptions.rect.class = "lifeline-rect";
 // Lifeline middle-rect options
 lifeLineOptions.middleRect = {};
 lifeLineOptions.middleRect.width = 100;
-lifeLineOptions.middleRect.height = 500;
+lifeLineOptions.middleRect.height = 300;
 lifeLineOptions.middleRect.roundX = 1;
 lifeLineOptions.middleRect.roundY = 1;
 lifeLineOptions.middleRect.class = "lifeline-middleRect";
 
 // Lifeline options
 lifeLineOptions.line = {};
-lifeLineOptions.line.height = 500;
+lifeLineOptions.line.height = 300;
 lifeLineOptions.line.class = "lifeline-line";
 // Lifeline text options
 lifeLineOptions.text = {};
@@ -46,8 +46,10 @@ var createPoint = function (x, y) {
     return new GeoCore.Models.Point({'x': x, 'y': y});
 };
 
-var createLifeLine = function (title, center) {
-    return new SequenceD.Models.LifeLine({title: title, centerPoint: center});
+var diagramD3el = undefined;
+
+var createLifeLine = function (title, center, cssClass) {
+    return new SequenceD.Models.LifeLine({title: title, centerPoint: center, cssClass: cssClass});
 };
 
 var createFixedSizedMediator = function (title, center) {
@@ -59,15 +61,32 @@ var createMessage = function (start, end) {
 };
 
 // Create tool palette elements
-var lifeline = new Tools.Models.Tool({
-    id: "tool1",
-    title: "Lifeline",
-    icon: "images/icon1.png"
-});
+//var lifeline = new Tools.Models.Tool({
+//    id: "LifeLine",
+//    title: "Lifeline",
+//    icon: "images/icon1.png",
+//    dragCursorOffset : { left: 30, top: 40 },
+//    createCloneCallback : function(view){
+//        function cloneCallBack() {
+//            var svgRoot = view.createSVGForDraggable();
+//            var line = svgRoot.draw.line(30, 10, 30, 60, svgRoot).attr("class", 'lifeline-tool-line');
+//            var rect = svgRoot.draw.basicRect(0, 0, 60, 20, 0, 0, svgRoot).attr("class", 'lifeline-tool-rect');
+//            return svgRoot.getDraggableRoot();
+//        }
+//        return cloneCallBack;
+//    },
+//});
+
 
 // Create main tool group
 var mainToolGroup = new Tools.Models.ToolGroup();
-mainToolGroup.add(lifeline);
+//mainToolGroup.add(lifeline);
+
+for (var lifeline in MainElements.lifelines) {
+    var tool = new Tools.Models.Tool(MainElements.lifelines[lifeline]);
+    mainToolGroup.add(tool);
+}
+
 var mainToolGroupWrapper = new Tools.Models.ToolGroupWrapper({
     toolGroupName: "Main Elements",
     toolGroupID: "main-tool-group",
@@ -97,15 +116,77 @@ toolPalette.add(mediatorsToolGroupWrapper);
 var paletteView = new Tools.Views.ToolPalatteView({collection: toolPalette});
 paletteView.render();
 
+
+$(function () {
+    var scrWidth = $(window).width();
+    var treeContainer = $("#tree-container");
+    var rightContainer = $("#right-container");
+    // treeContainer.width(scrWidth / 8);
+    //TODO: remove
+    treeContainer.width(0);
+    treeContainer.resizable({
+        ghost: false,
+        minWidth: scrWidth / 16,
+        maxWidth: scrWidth / 2,
+        resize: function (event, el) {
+            rightContainer.css("padding-left", el.size.width);
+        }
+    });
+    rightContainer.css("padding-left", treeContainer.width());
+
+    var toolContainer = $("#toolpalatte");
+    var editorContainer = $("#editor-container");
+    toolContainer.width(scrWidth / 8);
+    toolContainer.resizable({
+        ghost: false,
+        minWidth: scrWidth / 16,
+        maxWidth: scrWidth / 2,
+        resize: function (event, el) {
+            // editorContainer.css("padding-left", el.size.width);
+        }
+    });
+    //TODO: remove + 1
+    // editorContainer.css("padding-left", toolContainer.width() + 1);
+
+    var $tree = $("#tree");
+    initTree($tree);
+
+    var removed = false;
+    $("#tree-add-api").on('click',function (e) {
+        $tree.find("> li > ul").append("<li><input/></li>")
+        removed = false;
+        $tree.find('input').focus();
+    });
+    var addApi = function (e) {
+        if(!removed){
+            removed = true;
+            var $input = $tree.find('input');
+            $input.parent('li').remove();
+            var name = $input.val();
+            if(name != ""){
+                $tree.find("> li > ul").append("<li>" + name + "</li>")
+            }
+        }
+    };
+    $tree.on("blur", "input", addApi);
+    $tree.on('keypress', function (e) {
+        if (e.which === 13) {
+            addApi(e)
+        }
+    });
+
+});
+
 // Create the model for the diagram
 var diagram = new Diagrams.Models.Diagram({});
 
 // Create the diagram view
 var diagramOptions = {selector: '.editor'};
-var diagramView = new Diagrams.Views.DiagramView({model: diagram, options: diagramOptions});
-diagramView.render();
+//var diagramView = new Diagrams.Views.DiagramView({model: diagram, options: diagramOptions});
+//diagramView.render();
+var diagramViewElements = [];
 
-lifeLineOptions.diagram = diagram;
+//lifeLineOptions.diagram = defaultView.model;
 
 // var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
 // diagram.addElement(lifeline1, lifeLineOptions);
@@ -131,29 +212,65 @@ lifeLineOptions.diagram = diagram;
 // diagram.addElement(msg5, messageOptions);
 selected = "";
 selectedModel = "";
-var udcontrol = new Dialogs.Controls.UpdateDeleteControler({visible: false});
-var udcontrolView = new Dialogs.Views.UpdateDeletedControlerView({model: udcontrol});
-udcontrolView.render();
 
-// Initialize the editor
-// var propertyPane = new JSONEditor(document.getElementById("propertyPane"),{
-//     schema: {
-//         "title": "Person",
-//         type: "object",
-//         properties: {
-//             name: { "type": "string" }
-//         }
-//     },
-//     no_additional_properties: true,
-//     disable_properties:true,
-//     disable_edit_json:true
-// });
+//var ppModel = new Editor.Views.PropertyPaneModel();
+var ppView = new Editor.Views.PropertyPaneView();
+propertyPane = ''; //ppView.createPropertyPane(schema, properties);
+endpointLifelineCounter = 0;
+resourceLifelineCounter = 0;
 
-// // Set the value
-// propertyPane.setValue({
-//     name: "John Smith"
-// });
+function TreeNode(value, type, cStart, cEnd) {
+    this.object = undefined;
+    this.children = [];
+    this.value = value;
+    this.type = type;
+    this.configStart = cStart;
+    this.configEnd = cEnd;
 
-// // Get the value
-// var data = propertyPane.getValue();
-// console.log(data.name); // "John Smith"
+    this.getChildren = function () {
+        return this.children;
+    };
+
+    this.getValue = function () {
+        return this.value;
+    };
+}
+
+// defining the constants such as the endpoints, this variable need to be positioned properly when restructuring
+// This is a map of constants as --> constantType: constantValue
+// Ex: HttpEP: "http://localhost/test/test2"
+var definedConstants = {};
+
+// Configuring dynamic  tab support
+var tab = new Diagrams.Models.Tab({
+    resourceId: "seq_1",
+    hrefId: "#seq_1",
+    resourceTitle: "Resource",
+    createdTab: false
+});
+
+var tabListView = new Diagrams.Views.TabListView({model: tab});
+tabListView.render(tab);
+var diagramObj1 = new Diagrams.Models.Diagram({});
+tab.addDiagramForTab(diagramObj1);
+var tabId1 = tab.get("resourceId");
+var linkId1 = tab.get("hrefId");
+//Enabling tab activation at page load
+$('.tabList a[href="#' + tabId1 + '"]').tab('show');
+var dgModel1 = tab.getDiagramOfTab(tab.attributes.diagramForTab.models[0].cid);
+dgModel1.CurrentDiagram(dgModel1);
+var svgUId1 = tabId1 + "4";
+var options = {selector: linkId1, wrapperId: svgUId1};
+// get the current diagram view for the tab
+var currentView1 = dgModel1.createDiagramView(dgModel1, options);
+// set current tab's diagram view as default view
+currentView1.currentDiagramView(currentView1);
+tab.setDiagramViewForTab(currentView1);
+// mark tab as visited
+tab.setSelectedTab();
+var preview = new Diagrams.Views.DiagramOutlineView({mainView: currentView1});
+preview.render();
+tab.preview(preview);
+
+
+

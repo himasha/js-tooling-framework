@@ -11,19 +11,44 @@
    position: absolute;
    top: 0;
    left: 0;
-   width: 240px;
+   width: 274px;
    height: calc(100vh);
-   background-color: #BBBBBB;
+   background-color: #232323;
+   overflow: hidden;
 }
 
 .property-container{
     position: absolute;
-    top: 0;
-    width: 240px;
-    bottom: 0%;
-    right: 0%;
-    height: calc(100vh);
-    background-color: #BBBBBB;
+    background-color: #232323;
+    color: white;
+    right: 0px;
+    top: 80px;
+}
+
+#propertyPane input{
+    border: 1px solid #8d8d8d;
+    background-color: #232323;
+    color: #8d8d8d;
+    border-radius: 0;
+    box-shadow:none;
+}
+
+#propertyPane select{
+    border: 1px solid #8d8d8d;
+    color: #8d8d8d;
+    background-color: #232323;
+    border-radius: 0;
+    box-shadow:none;
+}
+
+#propertyPane label{
+    font-weight: normal;
+}
+
+#propertyPane > div > div.well.well-sm{
+    border-radius:0;
+    border: none;
+    background: none;
 }
 
 .logo{
@@ -41,15 +66,8 @@
    background-color: #292929;
 }
 
-.editor-container{
-   position: absolute;
-   top: 0;
-   left: 240px;
-   bottom: 0%;
-   right: 0%;
-   margin-left: 0px;
-   height: calc(100vh);
-   width: calc(100vw - 480px);
+#editor-container{
+   height: 100%;
    background-color: #fff;
    overflow: hidden;
 }
@@ -58,7 +76,7 @@
    width: 100%;
    height: 100%;
    position: relative;
-   overflow: scroll;
+   overflow: hidden;
    cursor: move;
    box-sizing: border-box;
 }
@@ -66,9 +84,12 @@
 svg text::selection { background: none; }
 
 .editor {
+   width: 100%;
+   height: 100%;
    margin: 0;
    position: relative;
    display: inline-block;
+
 }
 
 .editor > svg {
@@ -93,9 +114,6 @@ svg text::selection { background: none; }
    background-image: url("patterns/cardboard-flat.png");
 }
 
-.tool-container {
-   height: 40px;
-}
 
 .ui-draggable {
    z-index: 10000;
@@ -126,17 +144,13 @@ svg text::selection { background: none; }
     stroke:rgb(0,0,0);
 }
 
-.tool-image {
-   max-width:30px;
-   max-height:30px;
-   width: auto;
-   height: auto;
-   float: left;
-}
-
-.tool-title {
-  padding-left: 10px;
-  float: left;
+.non-user-selectable{
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
 }
 
 .udcontrol-image {
@@ -148,6 +162,7 @@ svg text::selection { background: none; }
   display: none;
   visibility: hidden;
 }
+
 .visible-button {
    display: block;
   visibility: visible;
@@ -181,6 +196,15 @@ body{
     border: none;
 }
 
+.panel{
+    border-radius: 0px;
+}
+
+.panel-heading {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
 .panel-info > .panel-heading {
   color: whitesmoke;
   background-color: #2A80B9;
@@ -191,7 +215,7 @@ body{
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-  background-color: #ddd;
+  /*background-color: #ddd;*/
 }
 
 iframe {
@@ -199,16 +223,60 @@ iframe {
   width: 100%;
 }
 
-.nav-tabs {
-  border: none;
-}
 
-.nav-tabs > li > a {
--webkit-border-radius: 0;
--moz-border-radius: 0;
-border-radius: 0;
+.nav-tabs > li {
+    /*height:35px;*/
+
 }
+.additionbtn {
+    width:40px;
+}
+/*.nav-tabs > li > a {*/
+/*-webkit-border-radius: 0;*/
+/*-moz-border-radius: 0;*/
+/*border-radius: 1px;*/
+    /*!*background-color:"#232323";  *!*/
+    /*padding-bottom:3px;*/
+/*}*/
 
 .monaco-editor {
   margin-top: 10px;
+}
+
+#propertyPane  button {
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+#propertyPane  h3 {
+    font-size: 16px;
+    padding-left: 6px;
+}
+
+#propertyPane > div {
+    padding-left: 6px;
+    padding-right: 4px;
+}
+
+.property-save {
+    margin: 2px;
+    opacity: 0.4;
+}
+
+.tab-divs{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.close-icon {
+    cursor: pointer;
+}
+
+.circle-hide {
+    display: none;
 }

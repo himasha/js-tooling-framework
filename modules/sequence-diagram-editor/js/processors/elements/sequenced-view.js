@@ -46,16 +46,6 @@ var SequenceD = (function (sequenced) {
 
                 var unitProcessorElement = this.drawUnitProcessor(this.modelAttr('centerPoint'), this.modelAttr('title'), this.options);
                 var viewObj = this;
-                var drag = d3.drag()
-                    .on("start", function () {
-                        viewObj.dragStart(d3.event);
-                    })
-                    .on("drag", function () {
-                        viewObj.dragMove(d3.event);
-                    })
-                    .on("end", function () {
-                        viewObj.dragStop();
-                    });
 
                 this.d3el = unitProcessorElement;
                 this.el = unitProcessorElement.node();
@@ -70,8 +60,8 @@ var SequenceD = (function (sequenced) {
                     .classed(prefs.rect.class, true);
                 var text = d3Ref.draw.centeredText(center, title, group)
                     .classed(prefs.text.class, true);
-                Object.getPrototypeOf(group).rect = rect;
-                Object.getPrototypeOf(group).title = text;
+                group.rect = rect;
+                group.title = text;
                 Object.getPrototypeOf(group).translate = function (dx, dy) {
                     this.attr("transform", function () {
                         return "translate(" + [dx, dy] + ")"

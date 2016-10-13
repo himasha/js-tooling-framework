@@ -23,9 +23,47 @@ var Processors = (function (processors) {
     //Define manipulator mediators
     var switchMediator = {
         id: "SwitchMediator",
-        title: "Switch Mediator",
-        icon: "images/SwitchMediator.gif",
-        parameters: []
+        title: "Switch",
+        icon: "images/tool-icons/switch.svg",
+        colour : "#334455",
+        type : "DynamicContainableProcessor",
+        dragCursorOffset : { left: 40, top: -5 },
+        createCloneCallback : function(view){
+            function cloneCallBack() {
+                var div = view.createContainerForDraggable();
+                d3.xml("images/tool-icons/switch_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                    if (error) throw error;
+                    var svg = xml.getElementsByTagName("svg")[0];
+                    d3.select(svg).attr("width", "80px").attr("height", "65px");
+                    div.node().appendChild(svg);
+                });
+                return div.node();
+            }
+            return cloneCallBack;
+        },
+        parameters: [
+            {
+                key: "description",
+                value: "Description"
+            }
+        ],
+        getSchema: function () {
+            return {
+                title: "Switch Mediator",
+                type: "object",
+                properties: {
+                    Description: {"type": "string"}
+                }
+            };
+        },
+        getEditableProperties: function (parameters) {
+            var editableProperties = {};
+            editableProperties.Description = parameters[0];
+            return editableProperties;
+        },
+        getMySubTree: function (model) {
+            return new TreeNode("SwitchMediator", "SwitchMediator");
+        }
     };
 
     // Add defined mediators to manipulators

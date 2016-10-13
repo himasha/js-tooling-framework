@@ -23,85 +23,67 @@ var Processors = (function (processors) {
     //Log mediator definition
     var logMediator = {
         id: "LogMediator",
-        title: "Log Mediator",
-        icon: "images/LogMediator.gif",
+        title: "Logger",
+        icon: "images/tool-icons/log.svg",
+        colour : "#2980b9",
+        type : "UnitProcessor",
+        dragCursorOffset : { left: 24, top: -5 },
+        createCloneCallback : function(view){
+            function cloneCallBack() {
+                var div = view.createContainerForDraggable();
+                d3.xml("images/tool-icons/log_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                    if (error) throw error;
+                    var svg = xml.getElementsByTagName("svg")[0];
+                    d3.select(svg).attr("width", "48px").attr("height", "108px");
+                    div.node().appendChild(svg);
+                });
+                return div.node();
+            }
+            return cloneCallBack;
+        },
         parameters: [
             {
-                key: "level",
-                label: "Log Level",
-                required: true,
-                value: {
-                    type: "String",
-                    values: [
-                        {key: "full", label: "FULL"}, {key: "simple", label: "SIMPLE"},
-                        {key: "headers", label: "HEADERS"}, {key: "custom", label: "CUSTOM"}
-                    ]
-                }
-
+                key: "message",
+                value: "Log message"
             },
             {
-                key: "category",
-                label: "Log Category",
-                required: true,
-                value: {
-                    type: "String",
-                    values: [
-                        {key: "trace", label: "Trace"}, {key: "debug", label: "DEBUG"}, {key: "info", label: "INFO"}
-                        , {key: "warn", label: "WARN"}, {key: "error", label: "ERROR"}, {key: "fatal", label: "FATAL"}
-                    ]
-                }
-            },
-            {
-                key: "separator",
-                label: "Log Separator",
-                required: false,
-                value: {
-                    type: "String"
-                }
+                key: "logLevel",
+                value: "info"
             },
             {
                 key: "description",
-                label: "Log Description",
-                required: false,
-                value: {
-                    type: "String"
-                }
-            },
-            {
-                key: "property",
-                label: "Properties",
-                required: false,
-                value: {
-                    type: "Array",
-                    parameters: [
-                        {
-                            key: "name",
-                            label: "Property Name",
-                            required: true,
-                            value: {
-                                type: "String"
-                            }
-                        },
-                        {
-                            key: "value",
-                            label: "Property Value",
-                            required: false,
-                            value: {
-                                type: "String"
-                            }
-                        },
-                        {
-                            key: "expression",
-                            label: "Property Expression",
-                            required: false,
-                            value: {
-                                type: "String"
-                            }
-                        }
-                    ]
-                }
+                value: "Description"
             }
-        ]
+        ],
+        getSchema: function () {
+            return {
+                title: "Log Mediator",
+                type: "object",
+                properties: {
+                    Message: {"type": "string"},
+                    LogLevel: {
+                        "type": "string",
+                        "enum": [
+                            "debug",
+                            "info",
+                            "error"
+                        ],
+                        "default": "info"
+                    },
+                    Description: {"type": "string"}
+                }
+            };
+        },
+        getEditableProperties: function (parameters) {
+            var editableProperties = {};
+            editableProperties.Message = parameters[0];
+            editableProperties.LogLevel = parameters[1];
+            editableProperties.Description = parameters[2];
+            return editableProperties;
+        },
+        getMySubTree: function (model) {
+            return new TreeNode("LogMediator", "LogMediator", "log(\"Test\"", ");");
+        }
     };
 
     // Add defined mediators to manipulators
